@@ -7,7 +7,7 @@ import { getFunctions } from "firebase/functions";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "##",
+    apiKey: "##", //this api key have been deprecated
     authDomain: "yt-clone-88b23.firebaseapp.com",
     projectId: "yt-clone-88b23",
     appId: "1:314722351841:web:dee3884dee2d43e15595a0",
