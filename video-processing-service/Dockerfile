@@ -1,41 +1,41 @@
-# Stage 1: Build the app
-FROM node:18-alpine AS builder
+# Stage 1: Build stage
+FROM node:18 AS builder
 
-# Install ffmpeg in builder - optional if you run only compiled JS in final stage
-RUN apk add --no-cache ffmpeg
-
+# Set the working directory in the container to /app
 WORKDIR /app
 
-# Copy package files to leverage docker cache for npm installs
-COPY package.json package-lock.json ./
+# Copy package.json and package-lock.json into the working directory
+COPY package*.json ./
 
+# Install any needed packages specified in package.json
 RUN npm install
 
-# Copy source code
+# Bundle app source inside the docker image
 COPY . .
 
-# Build TypeScript to JavaScript (assumes "build": "tsc" in package.json scripts)
+# Build the app
 RUN npm run build
 
-# Stage 2: Create final lightweight image
-FROM node:18-alpine
+# Stage 2: Production stage
+FROM node:18
 
-# Install ffmpeg since it's needed at runtime for video processing
-RUN apk add --no-cache ffmpeg
+# Install ffmpeg in the container
+RUN apt-get update && apt-get install -y ffmpeg
 
+# Set the working directory
 WORKDIR /app
 
-# Copy only production dependencies from builder stage
-COPY package.json package-lock.json ./
-RUN npm install --production
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Copy built files from builder stage (assuming output to /app/dist)
+# Install only production dependencies
+RUN npm install --only=production
+
+# Copy built app from the builder stage
 COPY --from=builder /app/dist ./dist
 
-# If you have other assets to copy (e.g., config files, .env), copy them here
-# COPY --from=builder /app/some-config ./some-config
-
+# Make port 3000 available to the world outside this container
 EXPOSE 3000
 
-# Start your service from the compiled JS code
-CMD ["node", "dist/index.js"]
+# Define the command to run your app using CMD which defines your runtime
+CMD [ "npm", "run", "serve" ]

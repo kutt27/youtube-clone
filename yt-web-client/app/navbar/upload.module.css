@@ -1,0 +1,20 @@
+.uploadInput{
+    display: none; /* hide the default icon */
+}
+
+.uploadButton {
+    display: inline-block;
+    border: 1px solid gray;
+    color: #065fd4;
+    padding: 0.5em 1em;
+    border-radius: 0.5em;
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.uploadButton:hover {
+    background-color: #eee;
+    border: 1px solid transparent;
+}
